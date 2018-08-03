@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <script>if (window.module) module = window.module;</script>
+
+    <meta charset="UTF-8">
+    <title>DIR Print</title>
+
+    <style>
+        .with-margin {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="display-4">DIR Print</h1>
+                <p class="lead">This application will take a directory path and print it's contents.</p>
+                <hr class="my-4">
+                <p>Enter the directory path below and press the "print" button.</p>
+            </div>
+        </div>
+        <div class="row with-margin">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <form>
+                            <h5 class="card-title">
+                                <label for="directoryPath">Directory Path</label>
+                            </h5>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="directoryPath" placeholder="Enter path">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Print</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row with-margin">
+            <div class="col">
+                <ul class="list-group"></ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const electron = require('electron');
+    const { ipcRenderer } = electron;
+    const form = document.querySelector('form');
+    const ul = document.querySelector('ul');
+
+    form.addEventListener('submit', submitPath);
+
+    function submitPath(e)
+    {
+        var path = $("#directoryPath").val();
+        e.preventDefault();
+        ipcRenderer.send('path:submit', path);
+    }
+
+    ipcRenderer.on('path:submit', function (e, files)
+    {
+        if (files == null)
+        {
+            ul.innerHTML = "No directory matches your input."
+        }
+        else 
+        {
+            // Clear old elements from list
+            ul.innerHTML = "";
+
+            // Add new elements to list
+            for (var i = 0; i < files.length; i++)
+            {
+                var li = document.createElement('li');
+                li.className = "list-group-item list-group-item-primary";
+                var itemText = document.createTextNode(files[i])
+                li.appendChild(itemText);
+                ul.appendChild(li);
+            }
+        }
+    })
+</script>
+
+</html>
