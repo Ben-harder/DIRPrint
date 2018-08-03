@@ -12,7 +12,6 @@ function createWindow()
 {
     win = new BrowserWindow({ width: 650, height: 500 })
     win.loadFile('index.html')
-        
     win.on('closed', () =>
     {
         win = null

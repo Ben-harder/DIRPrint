@@ -46,6 +46,13 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" id="directoryPath" placeholder="Enter path">
                             </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="checkbox">
+                                <label class="form-check-label" for="checkbox">
+                                    .log or .txt files only
+                                </label>
+                            </div>
+                            <br>
                             <button type="submit" class="btn btn-primary">Print</button>
                         </form>
                     </div>
@@ -64,6 +71,7 @@
     const { ipcRenderer } = electron;
     const form = document.querySelector('form');
     const ul = document.querySelector('ul');
+    const checkbox = document.getElementById("checkbox");
 
     form.addEventListener('submit', submitPath);
 
@@ -88,11 +96,26 @@
             // Add new elements to list
             for (var i = 0; i < files.length; i++)
             {
-                var li = document.createElement('li');
-                li.className = "list-group-item list-group-item-primary";
-                var itemText = document.createTextNode(files[i])
-                li.appendChild(itemText);
-                ul.appendChild(li);
+                if (checkbox.checked)
+                {
+                    console.log(files[i]);
+                    if (files[i].includes(".txt") || files[i].includes(".log"))
+                    {
+                        var li = document.createElement('li');
+                        li.className = "list-group-item list-group-item-primary";
+                        var itemText = document.createTextNode(files[i])
+                        li.appendChild(itemText);
+                        ul.appendChild(li);
+                    }
+                }
+                else 
+                {
+                    var li = document.createElement('li');
+                    li.className = "list-group-item list-group-item-primary";
+                    var itemText = document.createTextNode(files[i])
+                    li.appendChild(itemText);
+                    ul.appendChild(li);
+                }
             }
         }
     })
